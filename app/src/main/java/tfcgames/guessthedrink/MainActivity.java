@@ -1,4 +1,6 @@
 package tfcgames.guessthedrink;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.AssetManager;
 import android.graphics.drawable.Drawable;
@@ -150,5 +152,34 @@ public class MainActivity extends ActionBarActivity {
     public void setValSound(int i){
         value_sound = i;
     }
+
+    //обработка нажатия кнопки BACK
+    @Override
+    public void onBackPressed() {
+        openQuitDialog();
+    }
+
+    //открыть диалоговое окно при нажатии кнопки BACK на главном экране
+    private void openQuitDialog() {
+        AlertDialog.Builder quitDialog = new AlertDialog.Builder(
+                MainActivity.this);
+        quitDialog.setTitle("Выход: Вы уверены?");
+
+        quitDialog.setPositiveButton("Да", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                finish();
+            }
+        });
+
+        quitDialog.setNegativeButton("Нет", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+            }
+        });
+
+        quitDialog.show();
+    }
+
 
 }

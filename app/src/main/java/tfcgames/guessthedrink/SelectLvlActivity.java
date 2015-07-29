@@ -38,4 +38,13 @@ public class SelectLvlActivity extends MainActivity {
         });
 
     }
+
+    //обработка нажатия кнопки BACK
+    @Override
+    public void onBackPressed() {
+        Intent intent = new Intent(SelectLvlActivity.this, MainActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(intent);
+        overridePendingTransition(R.anim.slide_right_in, R.anim.slide_right_out);
+    }
 }

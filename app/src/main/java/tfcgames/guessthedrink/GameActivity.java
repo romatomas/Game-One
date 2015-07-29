@@ -209,4 +209,13 @@ public class GameActivity extends MainActivity{
         int j = (int)(Math.random() * this.btnSet.length);
         this.btnSet[j].setText(this.currentSetOfPictures[indexPicture].substring(0, this.currentSetOfPictures[indexPicture].lastIndexOf(".")));
     }
+
+    //обработка нажатия кнопки BACK
+    @Override
+    public void onBackPressed() {
+        Intent intent = new Intent(GameActivity.this, SelectLvlActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(intent);
+        overridePendingTransition(R.anim.slide_right_in, R.anim.slide_right_out);
+    }
 }
