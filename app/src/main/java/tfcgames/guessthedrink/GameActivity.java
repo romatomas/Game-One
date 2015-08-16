@@ -162,7 +162,7 @@ public class GameActivity extends MainActivity{
         }
     }
 
-    // show/hide controls
+    // показать/скрыть компоненты
     private void setUIVisible(boolean isVisible) {
         if (isVisible) {
             this.btnA.setVisibility(View.VISIBLE);
