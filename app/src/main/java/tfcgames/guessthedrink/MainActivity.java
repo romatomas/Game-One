@@ -2,27 +2,12 @@ package tfcgames.guessthedrink;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.res.AssetManager;
-import android.graphics.drawable.Drawable;
-import android.media.Image;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
-import android.widget.ImageView;
-import android.widget.TextView;
-import android.widget.Toast;
 
-import com.facebook.android.DialogError;
-import com.facebook.android.Facebook;
-import com.facebook.android.FacebookError;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Random;
 
 //keytool -exportcert -alias androiddebugkey -keystore "c:\Users\e2-User\.android\debug.keystore" | "c:\OpenSSL-Win64\bin\openssl.exe" sha1 -binary | "c:\OpenSSL-Win64\bin\openssl.exe" base64
 //keytool -exportcert -alias guessthedrink -keystore "d:\TFC_Games\android.jks " | "c:\OpenSSL-Win64\bin\openssl.exe" sha1 -binary | "c:\OpenSSL-Win64\bin\openssl.exe" base64
@@ -31,9 +16,7 @@ import java.util.Random;
 
 public class MainActivity extends ActionBarActivity {
 
-    public final String API_KEY = "1399587140356912";
-    public final String[] permissions = {"publish_stream"};
-    Facebook facebook = new Facebook(API_KEY);
+    private FacebookConnector facebookConnector;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,18 +25,20 @@ public class MainActivity extends ActionBarActivity {
 
         final Button btnStart = (Button) findViewById(R.id.btnStart);
         final ImageButton imgBtnSound = (ImageButton) findViewById(R.id.imgBtnSound);
-        final TextView txtInfo = (TextView) findViewById(R.id.txtInfo);
         final ImageButton imgBtnFB = (ImageButton) findViewById(R.id.imgBtnFB);
 
-        //нажатие на кнопку FB авторизации
+        facebookConnector = new FacebookConnector(MainActivity.this, MainActivity.this);
+        //press on FB button
         imgBtnFB.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                authorizeAndPostMassage();
+                facebookConnector.facebookPublish("Guess The Drink", "It's a final countdown!",
+                        "New incredible game by TFC Games", "http://tfcgames.com",
+                        "http://i.gyazo.com/93f87e866500a145288e7471f5508076.png");
             }
         });
 
-        //нажатие на кнопку START
+        //press on START button
         btnStart.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -63,7 +48,7 @@ public class MainActivity extends ActionBarActivity {
             }
         });
 
-        //включить/выключить звук в приложении
+        //on/off sound
         imgBtnSound.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -77,74 +62,7 @@ public class MainActivity extends ActionBarActivity {
         });
     }
 
-    //авторизоваться и запостить сообщение на facebook
-    public void authorizeAndPostMassage() {
-        facebook.authorize(this, permissions, new Facebook.DialogListener() {
-            @Override
-            public void onComplete(Bundle values) {
-                Toast.makeText(MainActivity.this, "Authorization successful", Toast.LENGTH_SHORT).show();
-                postMessage();
-            }
-
-            @Override
-            public void onFacebookError(FacebookError e) {
-                Toast.makeText(MainActivity.this, "Facebook error, try again later", Toast.LENGTH_SHORT).show();
-            }
-
-            @Override
-            public void onError(DialogError e) {
-                Toast.makeText(MainActivity.this, "Error, try again later", Toast.LENGTH_SHORT).show();
-            }
-
-            @Override
-            public void onCancel() {
-                Toast.makeText(MainActivity.this, "Authorization canceled", Toast.LENGTH_SHORT).show();
-            }
-        });
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        facebook.authorizeCallback(requestCode, resultCode, data);
-    }
-
-    private void postMessage() {
-        Bundle messageBunlde = prepareBundle();
-        facebook.dialog(this, "feed", messageBunlde, new Facebook.DialogListener() {
-
-            @Override
-            public void onComplete(Bundle values) {
-                Toast.makeText(MainActivity.this, "Thank you!", Toast.LENGTH_SHORT).show();
-            }
-
-            @Override
-            public void onFacebookError(FacebookError e) {
-                Toast.makeText(MainActivity.this, "Facebook error, try again later", Toast.LENGTH_SHORT).show();
-            }
-
-            @Override
-            public void onError(DialogError e) {
-                Toast.makeText(MainActivity.this, "Error, try again later", Toast.LENGTH_SHORT).show();
-            }
-
-            @Override
-            public void onCancel() {
-                Toast.makeText(MainActivity.this, "Authorization canceled", Toast.LENGTH_SHORT).show();
-            }});
-    }
-
-    private Bundle prepareBundle() {
-        Bundle postBundle = new Bundle();
-        postBundle.putString("name", "Guess The Drink");
-        postBundle.putString("caption", "It's a final countdown!");
-        postBundle.putString("description", "New incredible game by TFC Games");
-        postBundle.putString("link","http://tfcgames.com");
-        postBundle.putString("picture","http://i.gyazo.com/93f87e866500a145288e7471f5508076.png");
-        return postBundle;
-    }
-
-    //получить и установить значение для кнопки звука
+    //get and set value for SOUND button
     int value_sound;
     public int getValSound(){
         return value_sound;
@@ -153,26 +71,26 @@ public class MainActivity extends ActionBarActivity {
         value_sound = i;
     }
 
-    //обработка нажатия кнопки BACK
+    //BACK button processing
     @Override
     public void onBackPressed() {
         openQuitDialog();
     }
 
-    //открыть диалоговое окно при нажатии кнопки BACK на главном экране
+    //are you sure you want to quit?
     private void openQuitDialog() {
         AlertDialog.Builder quitDialog = new AlertDialog.Builder(
                 MainActivity.this);
-        quitDialog.setTitle("Выход: Вы уверены?");
+        quitDialog.setTitle("Exit: Are you sure?");
 
-        quitDialog.setPositiveButton("Да", new DialogInterface.OnClickListener() {
+        quitDialog.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 finish();
             }
         });
 
-        quitDialog.setNegativeButton("Нет", new DialogInterface.OnClickListener() {
+        quitDialog.setNegativeButton("No", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
             }
@@ -180,6 +98,5 @@ public class MainActivity extends ActionBarActivity {
 
         quitDialog.show();
     }
-
-
 }
+

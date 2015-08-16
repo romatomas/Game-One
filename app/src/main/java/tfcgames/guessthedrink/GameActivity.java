@@ -15,9 +15,6 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Random;
 
-/**
- * Created by e2-User on 13.05.2015.
- */
 public class GameActivity extends MainActivity{
 
     //получить и установить текущий массив картинок
@@ -46,7 +43,7 @@ public class GameActivity extends MainActivity{
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game);
-        // получил активити
+        // get activity
         this.btnA = (Button) findViewById(R.id.btnA);
         this.btnB = (Button) findViewById(R.id.btnB);
         this.btnC = (Button) findViewById(R.id.btnC);
@@ -128,7 +125,7 @@ public class GameActivity extends MainActivity{
         }
     }
 
-    //перетусовка массива
+    //shuffle array
     private void shuffleArray(String[] ar)
     {
         Random rnd = new Random();
@@ -210,7 +207,7 @@ public class GameActivity extends MainActivity{
         this.btnSet[j].setText(this.currentSetOfPictures[indexPicture].substring(0, this.currentSetOfPictures[indexPicture].lastIndexOf(".")));
     }
 
-    //обработка нажатия кнопки BACK
+    //BACK button processing
     @Override
     public void onBackPressed() {
         Intent intent = new Intent(GameActivity.this, SelectLvlActivity.class);
