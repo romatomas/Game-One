@@ -71,4 +71,13 @@
         android:layout_alignLeft="@+id/btnDOTD"
         android:layout_alignStart="@+id/btnDOTD" />
 
+    <Button
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Database"
+        android:id="@+id/btnDatabase"
+        android:layout_below="@+id/imgBtnFav"
+        android:layout_centerHorizontal="true" />
+
 </RelativeLayout>
