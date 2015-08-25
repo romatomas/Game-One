@@ -3,27 +3,12 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.res.AssetManager;
-import android.graphics.drawable.Drawable;
-import android.media.Image;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
-import android.widget.ImageView;
-import android.widget.TextView;
-import android.widget.Toast;
 
-import com.facebook.android.DialogError;
-import com.facebook.android.Facebook;
-import com.facebook.android.FacebookError;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Random;
 
 import tfcgames.guessthedrink.DataBaseOperation.DBHelper;
 import tfcgames.guessthedrink.DataBaseOperation.DataBaseConnector;
@@ -36,10 +21,14 @@ import tfcgames.guessthedrink.FaceBookConnector.FBConnector;
 
 public class MainActivity extends ActionBarActivity {
 
+<<<<<<< HEAD
     private Button btnDatabase;
     private DataBaseConnector dbConnector;
 
     private DBHelper dbHelper;
+=======
+    private FacebookConnector facebookConnector;
+>>>>>>> origin/master
 
     private FBConnector fb;
     @Override
@@ -49,9 +38,9 @@ public class MainActivity extends ActionBarActivity {
 
         final Button btnStart = (Button) findViewById(R.id.btnStart);
         final ImageButton imgBtnSound = (ImageButton) findViewById(R.id.imgBtnSound);
-        final TextView txtInfo = (TextView) findViewById(R.id.txtInfo);
         final ImageButton imgBtnFB = (ImageButton) findViewById(R.id.imgBtnFB);
 
+<<<<<<< HEAD
         btnDatabase = (Button) findViewById(R.id.btnDatabase);
 
         fb = new FBConnector(MainActivity.this, MainActivity.this);
@@ -61,10 +50,20 @@ public class MainActivity extends ActionBarActivity {
             public void onClick(View v) {
                 FBConnector fb = new FBConnector(MainActivity.this, MainActivity.this);
                 fb.authorizeAndPostMassage();
+=======
+        facebookConnector = new FacebookConnector(MainActivity.this, MainActivity.this);
+        //press on FB button
+        imgBtnFB.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                facebookConnector.facebookPublish("Guess The Drink", "It's a final countdown!",
+                        "New incredible game by TFC Games", "http://tfcgames.com",
+                        "http://i.gyazo.com/93f87e866500a145288e7471f5508076.png");
+>>>>>>> origin/master
             }
         });
 
-        //нажатие на кнопку START
+        //press on START button
         btnStart.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -74,7 +73,7 @@ public class MainActivity extends ActionBarActivity {
             }
         });
 
-        //включить/выключить звук в приложении
+        //on/off sound
         imgBtnSound.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -87,6 +86,7 @@ public class MainActivity extends ActionBarActivity {
             }
         });
 
+<<<<<<< HEAD
         // Работа с БД (временно тут)
         btnDatabase.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -104,6 +104,9 @@ public class MainActivity extends ActionBarActivity {
     }
 
     //получить и установить значение для кнопки звука
+=======
+    //get and set value for SOUND button
+>>>>>>> origin/master
     int value_sound;
     public int getValSound(){
         return value_sound;
@@ -113,24 +116,32 @@ public class MainActivity extends ActionBarActivity {
         value_sound = i;
     }
 
-    //обработка нажатия кнопки BACK
+    //BACK button processing
     @Override
     public void onBackPressed() {
         openQuitDialog();
     }
 
-    //открыть диалоговое окно при нажатии кнопки BACK на главном экране
+    //are you sure you want to quit?
     private void openQuitDialog() {
+<<<<<<< HEAD
         AlertDialog.Builder quitDialog = new AlertDialog.Builder(MainActivity.this);
         quitDialog.setTitle("Выход: Вы уверены?");
         quitDialog.setPositiveButton("Да", new DialogInterface.OnClickListener() {
+=======
+        AlertDialog.Builder quitDialog = new AlertDialog.Builder(
+                MainActivity.this);
+        quitDialog.setTitle("Exit: Are you sure?");
+
+        quitDialog.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+>>>>>>> origin/master
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 finish();
             }
         });
 
-        quitDialog.setNegativeButton("Нет", new DialogInterface.OnClickListener() {
+        quitDialog.setNegativeButton("No", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
             }
@@ -138,3 +149,4 @@ public class MainActivity extends ActionBarActivity {
         quitDialog.show();
     }
 }
+
