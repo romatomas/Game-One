@@ -39,6 +39,30 @@ public class DBHelper extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-
+        ContentValues cv = new ContentValues();
+        if (oldVersion == 1 && newVersion == 2) {
+            String imgNames[] = new String[] {"bender", "bogdan", "gomer", "oleg", "roman", "stewie", "vadim"};
+            db.beginTransaction();
+            try {
+                db.execSQL(TableImageList.CREATE_TABLE_IMAGE_LIST);
+                for (int i = 0; i < imgNames.length; i++) {
+                    cv.clear();
+                    cv.put("imgCaption", imgNames[i]);
+                    cv.put("complexity", 1);
+                    cv.put("lvlId", 1);
+                    db.insert(TableImageList.TABLE_NAME, null, cv);
+                }
+                for (int i = 0; i < imgNames.length; i++) {
+                    cv.clear();
+                    cv.put("imgCaption", imgNames[i]);
+                    cv.put("complexity", 1);
+                    cv.put("lvlId", 2);
+                    db.insert(TableImageList.TABLE_NAME, null, cv);
+                }
+                db.setTransactionSuccessful();
+            } finally {
+                db.endTransaction();
+            }
+        }
     }
 }

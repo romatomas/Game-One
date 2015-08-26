@@ -9,7 +9,7 @@ import android.database.sqlite.SQLiteOpenHelper;
  */
 public class DataBaseConnector {
     private static final String DATABASE_NAME = "GTD_DATABASE";
-    private static final int DATABASE_VERSION = 1;
+    private static final int DATABASE_VERSION = 2;
 
     private final Context currentContext;
     private DBHelper dbHelper;
@@ -35,5 +35,9 @@ public class DataBaseConnector {
 
     public Cursor getLevelList() {
         return dbGTD.query(TableLevelList.TABLE_NAME, null, null, null, null, null, null);
+    }
+
+    public Cursor getImgList() {
+        return dbGTD.query(TableImageList.TABLE_NAME, null, null, null, null, null, null);
     }
 }

@@ -2,8 +2,10 @@ package tfcgames.guessthedrink;
 
 import android.content.Intent;
 import android.content.res.AssetManager;
+import android.database.Cursor;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -15,6 +17,12 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Random;
 
+import tfcgames.guessthedrink.DataBaseOperation.DBHelper;
+import tfcgames.guessthedrink.DataBaseOperation.DataBaseConnector;
+
+/**
+ * Created by e2-User on 13.05.2015.
+ */
 public class GameActivity extends MainActivity{
 
     //получить и установить текущий массив картинок
@@ -39,11 +47,14 @@ public class GameActivity extends MainActivity{
 
     Button btnSet[];
 
+    private Integer levelId;
+    private DBHelper dbHelper;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game);
-        // get activity
+        // получил активити
         this.btnA = (Button) findViewById(R.id.btnA);
         this.btnB = (Button) findViewById(R.id.btnB);
         this.btnC = (Button) findViewById(R.id.btnC);
@@ -60,6 +71,25 @@ public class GameActivity extends MainActivity{
         this.txtScore.setText("0");
 
         this.btnSet = new Button[]{this.btnA, this.btnB, this.btnC, this.btnD};
+
+        Intent intent = getIntent();
+        this.levelId = intent.getIntExtra("levelId", -1);
+
+        //
+        DataBaseConnector dbConnector = new DataBaseConnector(this, dbHelper);
+        dbConnector.open();
+        Cursor cLevelList = dbConnector.getImgList();
+
+        if (cLevelList != null) {
+            if (cLevelList.moveToFirst()) {
+                do {
+                    Log.d("GTD_LOG", cLevelList.getString(cLevelList.getColumnIndex("imgCaption")));
+                } while (cLevelList.moveToNext());
+            }
+        }
+        dbConnector.close();
+        //
+
         // отобразил
         setUIVisible(true);
 
@@ -125,7 +155,7 @@ public class GameActivity extends MainActivity{
         }
     }
 
-    //shuffle array
+    //перетусовка массива
     private void shuffleArray(String[] ar)
     {
         Random rnd = new Random();
@@ -162,7 +192,7 @@ public class GameActivity extends MainActivity{
         }
     }
 
-    // show/hide controls
+    // показать/скрыть компоненты
     private void setUIVisible(boolean isVisible) {
         if (isVisible) {
             this.btnA.setVisibility(View.VISIBLE);
@@ -207,7 +237,7 @@ public class GameActivity extends MainActivity{
         this.btnSet[j].setText(this.currentSetOfPictures[indexPicture].substring(0, this.currentSetOfPictures[indexPicture].lastIndexOf(".")));
     }
 
-    //BACK button processing
+    //обработка нажатия кнопки BACK
     @Override
     public void onBackPressed() {
         Intent intent = new Intent(GameActivity.this, SelectLvlActivity.class);

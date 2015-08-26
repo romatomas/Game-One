@@ -16,6 +16,9 @@ import android.widget.Toast;
 import tfcgames.guessthedrink.DataBaseOperation.DBHelper;
 import tfcgames.guessthedrink.DataBaseOperation.DataBaseConnector;
 
+/**
+ * Created by e2-User on 14.05.2015.
+ */
 public class SelectLvlActivity extends MainActivity {
 
     private DBHelper dbHelper;
@@ -67,13 +70,14 @@ public class SelectLvlActivity extends MainActivity {
                     } while (cLevelList.moveToNext());
                 }
             }
+            dbConnector.close();
         } catch (Exception e) {
             Log.d("GTD_LOG", e.getMessage().toString());
         }
 
     }
 
-    //BACK button processing
+    //обработка нажатия кнопки BACK
     @Override
     public void onBackPressed() {
         Intent intent = new Intent(SelectLvlActivity.this, MainActivity.class);
