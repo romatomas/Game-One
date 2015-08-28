@@ -3,7 +3,6 @@ package tfcgames.guessthedrink;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
-import android.provider.SyncStateContract;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,14 +10,10 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import tfcgames.guessthedrink.DataBaseOperation.DBHelper;
 import tfcgames.guessthedrink.DataBaseOperation.DataBaseConnector;
 
-/**
- * Created by e2-User on 14.05.2015.
- */
 public class SelectLvlActivity extends MainActivity {
 
     private DBHelper dbHelper;
@@ -77,7 +72,7 @@ public class SelectLvlActivity extends MainActivity {
 
     }
 
-    //обработка нажатия кнопки BACK
+    //BACK button processing
     @Override
     public void onBackPressed() {
         Intent intent = new Intent(SelectLvlActivity.this, MainActivity.class);
