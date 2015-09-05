@@ -242,4 +242,11 @@ public class GameActivity extends MainActivity{
         startActivity(intent);
         overridePendingTransition(R.anim.slide_right_in, R.anim.slide_right_out);
     }
+
+    // Working with SQLite
+    // getting image list by levelID
+    private String[] getImageListByLevelId() {
+
+        return null;
+    }
 }
