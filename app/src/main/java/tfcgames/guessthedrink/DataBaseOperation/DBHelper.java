@@ -42,7 +42,7 @@ public class DBHelper extends SQLiteOpenHelper {
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         ContentValues cv = new ContentValues();
-        if (oldVersion == 1 && newVersion == 2 && newVersion == 3) {
+        if (oldVersion == 3 && newVersion == 4) {
             String imgNames1[] = new String[] {"BIRD IN HAND SHIRAZ",
                                                "BOMBAY SAPHIRE",
                                                "BRANDS LAIRA CAB MERLOT",
@@ -75,7 +75,8 @@ public class DBHelper extends SQLiteOpenHelper {
                                                           "Albert bichot pouilly fuisse"};
             db.beginTransaction();
             try {
-                db.execSQL(TableImageList.CREATE_TABLE_IMAGE_LIST);
+                db.delete(TableImageList.TABLE_NAME, null, null);
+                //db.execSQL(TableImageList.CREATE_TABLE_IMAGE_LIST);
                 Random rnd = new Random(System.currentTimeMillis());
                 String[] buf = null;
                 String[] buf_complexity = null;
