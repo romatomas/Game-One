@@ -19,6 +19,7 @@ import java.util.Random;
 
 import tfcgames.guessthedrink.DataBaseOperation.DBHelper;
 import tfcgames.guessthedrink.DataBaseOperation.DataBaseConnector;
+import tfcgames.guessthedrink.Entity.Frame;
 
 public class GameActivity extends MainActivity{
 
@@ -72,24 +73,10 @@ public class GameActivity extends MainActivity{
         Intent intent = getIntent();
         this.levelId = intent.getIntExtra("levelId", -1);
 
-        //
-        DataBaseConnector dbConnector = new DataBaseConnector(this, dbHelper);
-        dbConnector.open();
-        Cursor cLevelList = dbConnector.getImgList();
-
-        if (cLevelList != null) {
-            if (cLevelList.moveToFirst()) {
-                do {
-                    Log.d("GTD_LOG", cLevelList.getString(cLevelList.getColumnIndex("imgCaption")));
-                } while (cLevelList.moveToNext());
-            }
-        }
-        dbConnector.close();
-        //
-
         // отобразил
         setUIVisible(true);
 
+        startLevelNew();
         startLvl();
 
         this.btnA.setOnClickListener(new View.OnClickListener() {
@@ -277,5 +264,32 @@ public class GameActivity extends MainActivity{
 
     private String getLevelPath() {
         return "pics/level_" + levelId.toString();
+    }
+
+    //new version for start level
+    private void startLevelNew() {
+        ArrayList<Frame> currentLevel = new ArrayList<Frame>();
+        try {
+            DataBaseConnector dbConnector = new DataBaseConnector(this, dbHelper);
+            dbConnector.open();
+            Cursor cPicturesList = dbConnector.getImgList(levelId);
+            if (cPicturesList != null) {
+                if (cPicturesList.moveToFirst()){
+                    do {
+                        Frame tempFrame = new Frame(cPicturesList.getString(cPicturesList.getColumnIndex("imgCaption")),
+                                                    cPicturesList.getInt(cPicturesList.getColumnIndex("complexity")),
+                                                    levelId);
+                        tempFrame.fillFalseImageList(); // Load false variants
+                        currentLevel.add(tempFrame);
+                    } while (cPicturesList.moveToNext());
+                }
+            }
+
+
+            dbConnector.close();
+        } catch (Exception e) {
+            Log.d("GTD_LOG", e.getMessage().toString());
+        }
+
     }
 }

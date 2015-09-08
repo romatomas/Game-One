@@ -37,7 +37,8 @@ public class DataBaseConnector {
         return dbGTD.query(TableLevelList.TABLE_NAME, null, null, null, null, null, null);
     }
 
-    public Cursor getImgList() {
-        return dbGTD.query(TableImageList.TABLE_NAME, null, null, null, null, null, null);
+    public Cursor getImgList(Integer lvlId) {
+        String[] selectionArgs = {lvlId.toString()};
+        return dbGTD.query(TableImageList.TABLE_NAME, null, "lvlId = ?", selectionArgs, null, null, null);
     }
 }
