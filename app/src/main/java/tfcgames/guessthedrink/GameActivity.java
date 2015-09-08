@@ -142,13 +142,38 @@ public class GameActivity extends MainActivity{
     private void startLvl(){
         AssetManager am = getAssets();
         try {
-            String[] pics = am.list("pics");
-            shuffleArray(pics);
-            this.currentSetOfPictures = pics;
+            String[] pics = am.list(getLevelPath());
+            ArrayList<String> onlyLevelPics = new ArrayList<String>();
+            for (int i = 0; i < pics.length; i++){
+                if (!pics[i].equals("Complexity")) {
+                    onlyLevelPics.add(pics[i]);
+                }
+            }
+            String[] m = new String[onlyLevelPics.size()];
+            int i = 0;
+            for (String tmp : onlyLevelPics) {
+                m[i] = tmp;
+                i++;
+            }
+            shuffleArray(m);
+            currentSetOfPictures = m;
             nextPicture(0);
         }
         catch (IOException ex){
             //return;
+        }
+    }
+
+    void displayFiles(AssetManager mgr, String path) {
+        try {
+            String list[] = mgr.list(path);
+            if (list != null)
+                for (int i = 0; i < list.length; ++i) {
+                    Log.v("Assets:", path + "/" + list[i]);
+                    displayFiles(mgr, path + "/" + list[i]);
+                }
+        } catch (IOException e) {
+            Log.v("List error:", "can't list" + path);
         }
     }
 
@@ -215,7 +240,7 @@ public class GameActivity extends MainActivity{
     }
 
     private void nextPicture(int indexPicture) throws IOException {
-        InputStream ims = getAssets().open("pics/" + this.currentSetOfPictures[indexPicture]);
+        InputStream ims = getAssets().open(getLevelPath() + "/" + this.currentSetOfPictures[indexPicture]);
         Drawable d = Drawable.createFromStream(ims, null);
         this.imgPhoto.setImageDrawable(d);
         this.valueArrayIndex = indexPicture;
@@ -248,5 +273,9 @@ public class GameActivity extends MainActivity{
     private String[] getImageListByLevelId() {
 
         return null;
+    }
+
+    private String getLevelPath() {
+        return "pics/level_" + levelId.toString();
     }
 }
