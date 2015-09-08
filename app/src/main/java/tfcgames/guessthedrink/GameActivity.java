@@ -285,7 +285,6 @@ public class GameActivity extends MainActivity{
                 }
             }
 
-
             dbConnector.close();
         } catch (Exception e) {
             Log.d("GTD_LOG", e.getMessage().toString());

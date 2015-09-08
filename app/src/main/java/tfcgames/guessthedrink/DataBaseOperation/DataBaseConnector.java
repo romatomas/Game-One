@@ -39,6 +39,6 @@ public class DataBaseConnector {
 
     public Cursor getImgList(Integer lvlId) {
         String[] selectionArgs = {lvlId.toString()};
-        return dbGTD.query(TableImageList.TABLE_NAME, null, "lvlId = ?", selectionArgs, null, null, null);
+        return dbGTD.query(TableImageList.TABLE_NAME, null, "lvlId = ? AND complexity <> 0", selectionArgs, null, null, null);
     }
 }
