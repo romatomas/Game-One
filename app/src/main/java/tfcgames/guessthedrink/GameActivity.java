@@ -173,7 +173,6 @@ public class GameActivity extends MainActivity{
             if (cPicturesList != null) {
                 if (cPicturesList.moveToFirst()){
                     do {
-                        Log.d("GTD_LOG", cPicturesList.getString(cPicturesList.getColumnIndex("imgId")));
                         Frame tempFrame = new Frame(cPicturesList.getString(cPicturesList.getColumnIndex("imgCaption")),
                                                     cPicturesList.getInt(cPicturesList.getColumnIndex("complexity")),
                                                     levelId,
