@@ -19,6 +19,7 @@ import java.util.Random;
 
 import tfcgames.guessthedrink.DataBaseOperation.DBHelper;
 import tfcgames.guessthedrink.DataBaseOperation.DataBaseConnector;
+import tfcgames.guessthedrink.Entity.Frame;
 
 public class GameActivity extends MainActivity{
 
@@ -46,6 +47,7 @@ public class GameActivity extends MainActivity{
 
     private Integer levelId;
     private DBHelper dbHelper;
+    private ArrayList<Frame> currentLevel = new ArrayList<Frame>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,51 +74,36 @@ public class GameActivity extends MainActivity{
         Intent intent = getIntent();
         this.levelId = intent.getIntExtra("levelId", -1);
 
-        //
-        DataBaseConnector dbConnector = new DataBaseConnector(this, dbHelper);
-        dbConnector.open();
-        Cursor cLevelList = dbConnector.getImgList();
-
-        if (cLevelList != null) {
-            if (cLevelList.moveToFirst()) {
-                do {
-                    Log.d("GTD_LOG", cLevelList.getString(cLevelList.getColumnIndex("imgCaption")));
-                } while (cLevelList.moveToNext());
-            }
-        }
-        dbConnector.close();
-        //
-
         // отобразил
         setUIVisible(true);
 
-        startLvl();
+        startLevelNew();
 
         this.btnA.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                isMatch(0);
+                isMatchNew(0);
             }
         });
 
         this.btnB.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                isMatch(1);
+                isMatchNew(1);
             }
         });
 
         this.btnC.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                isMatch(2);
+                isMatchNew(2);
             }
         });
 
         this.btnD.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                isMatch(3);
+                isMatchNew(3);
             }
         });
 
@@ -137,56 +124,6 @@ public class GameActivity extends MainActivity{
                 overridePendingTransition(R.anim.slide_right_in, R.anim.slide_right_out);
             }
         });
-    }
-
-    private void startLvl(){
-        AssetManager am = getAssets();
-        try {
-            String[] pics = am.list("pics");
-            shuffleArray(pics);
-            this.currentSetOfPictures = pics;
-            nextPicture(0);
-        }
-        catch (IOException ex){
-            //return;
-        }
-    }
-
-    //shuffle array
-    private void shuffleArray(String[] ar)
-    {
-        Random rnd = new Random();
-        for (int i = ar.length - 1; i > 0; i--)
-        {
-            int index = rnd.nextInt(i + 1);
-            String a = ar[index];
-            ar[index] = ar[i];
-            ar[i] = a;
-        }
-    }
-
-    //обработка события нажатия на кнопку - вариант ответа
-    private void isMatch(int i){
-        //проверка на правильный ответ (беру текст с кнопки и сверяю с именем картинки)
-        if (this.currentSetOfPictures[this.valueArrayIndex].contains(this.btnSet[i].getText().toString())){
-            //увеличиваю счетчик очков на единицу
-            this.txtScore.setText(String.valueOf(Integer.valueOf(this.txtScore.getText().toString()) + 1));
-            //проверка - не закончились ли картинки
-            if (this.valueArrayIndex >= this.currentSetOfPictures.length - 1){
-                setUIVisible(false);
-                this.txtInfo.setText("Поздравляем, Вы закончили уровень и заработали " + this.txtScore.getText() + " очков!");
-            } else {  //если картинки не закончились, то увеличиваю счетчик очков и перехожу на следующую картинку
-                try {
-                    nextPicture(this.valueArrayIndex + 1);
-                }
-                catch (IOException ex){
-                    //return;
-                }
-            }
-        } else {  //если ответ не правильный, то конец игры
-            setUIVisible(false);
-            this.txtInfo.setText("Вы заработали " + this.txtScore.getText() + " очков!");
-        }
     }
 
     // show/hide controls
@@ -214,26 +151,6 @@ public class GameActivity extends MainActivity{
         }
     }
 
-    private void nextPicture(int indexPicture) throws IOException {
-        InputStream ims = getAssets().open("pics/" + this.currentSetOfPictures[indexPicture]);
-        Drawable d = Drawable.createFromStream(ims, null);
-        this.imgPhoto.setImageDrawable(d);
-        this.valueArrayIndex = indexPicture;
-        //генерирую случайные надписи для кнопок из имен файлов в папке assets
-        int randomPic = (int)(Math.random() * this.currentSetOfPictures.length);
-        ArrayList<Integer> buffer = new ArrayList<Integer>();
-        for (int index = 0; index < this.btnSet.length; index++){
-            while (buffer.contains(randomPic) || randomPic == indexPicture){
-                randomPic = (int)(Math.random() * this.currentSetOfPictures.length);
-            }
-            buffer.add(randomPic);
-            this.btnSet[index].setText(this.currentSetOfPictures[randomPic].substring(0, this.currentSetOfPictures[randomPic].lastIndexOf(".")));
-        }
-        //вывожу на рандомную кнопку правильный ответ (картинка, которая выводится на экран в данный момент)
-        int j = (int)(Math.random() * this.btnSet.length);
-        this.btnSet[j].setText(this.currentSetOfPictures[indexPicture].substring(0, this.currentSetOfPictures[indexPicture].lastIndexOf(".")));
-    }
-
     //BACK button processing
     @Override
     public void onBackPressed() {
@@ -243,10 +160,72 @@ public class GameActivity extends MainActivity{
         overridePendingTransition(R.anim.slide_right_in, R.anim.slide_right_out);
     }
 
-    // Working with SQLite
-    // getting image list by levelID
-    private String[] getImageListByLevelId() {
+    private String getLevelPath() {
+        return "pics/level_" + levelId.toString();
+    }
 
-        return null;
+    //new version for start level
+    private void startLevelNew() {
+        try {
+            DataBaseConnector dbConnector = new DataBaseConnector(this, dbHelper);
+            dbConnector.open();
+            Cursor cPicturesList = dbConnector.getImgList(levelId);
+            if (cPicturesList != null) {
+                if (cPicturesList.moveToFirst()){
+                    do {
+                        Log.d("GTD_LOG", cPicturesList.getString(cPicturesList.getColumnIndex("imgId")));
+                        Frame tempFrame = new Frame(cPicturesList.getString(cPicturesList.getColumnIndex("imgCaption")),
+                                                    cPicturesList.getInt(cPicturesList.getColumnIndex("complexity")),
+                                                    levelId,
+                                                    dbConnector);
+                        tempFrame.fillFalseImageList(); // Load false variants
+                        currentLevel.add(tempFrame);
+                    } while (cPicturesList.moveToNext());
+                }
+            }
+            dbConnector.close();
+            nextPictureNew(0);
+        } catch (Exception e) {
+            Log.d("GTD_LOG", e.getMessage().toString());
+        }
+
+    }
+
+    private void nextPictureNew(int indexPicture) throws IOException {
+        Frame frm = currentLevel.get(indexPicture);
+        valueArrayIndex = indexPicture;
+        InputStream ims = getAssets().open(getLevelPath() + "/" + frm.getPicture() + ".JPG");
+        Drawable d = Drawable.createFromStream(ims, null);
+        imgPhoto.setImageDrawable(d);
+        // Заполнить картинки неверными вариантами
+        for (int i = 0 ; i < btnSet.length; i++) {
+            btnSet[i].setText(currentLevel.get(indexPicture).getFalseImageList().get(i));
+        }
+        //вывожу на рандомную кнопку правильный ответ (картинка, которая выводится на экран в данный момент)
+        int j = (int)(Math.random() * btnSet.length);
+        btnSet[j].setText(currentLevel.get(indexPicture).getPicture());
+    }
+
+    private void isMatchNew(int i){
+        //проверка на правильный ответ (беру текст с кнопки и сверяю с именем картинки)
+        if (currentLevel.get(valueArrayIndex).getPicture().equals(btnSet[i].getText().toString())) {
+            //увеличиваю счетчик очков на единицу
+            this.txtScore.setText(String.valueOf(Integer.valueOf(this.txtScore.getText().toString()) + 1));
+            //проверка - не закончились ли картинки
+            if (valueArrayIndex >= currentLevel.size() - 1){
+                setUIVisible(false);
+                this.txtInfo.setText("Поздравляем, Вы закончили уровень и заработали " + txtScore.getText() + " очков!");
+            } else {  //если картинки не закончились, то увеличиваю счетчик очков и перехожу на следующую картинку
+                try {
+                    nextPictureNew(valueArrayIndex + 1);
+                }
+                catch (IOException ex){
+                    //return;
+                }
+            }
+        } else {  //если ответ не правильный, то конец игры
+            setUIVisible(false);
+            txtInfo.setText("Вы заработали " + this.txtScore.getText() + " очков!");
+        }
     }
 }

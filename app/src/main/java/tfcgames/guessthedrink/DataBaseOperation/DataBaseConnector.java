@@ -37,7 +37,13 @@ public class DataBaseConnector {
         return dbGTD.query(TableLevelList.TABLE_NAME, null, null, null, null, null, null);
     }
 
-    public Cursor getImgList() {
-        return dbGTD.query(TableImageList.TABLE_NAME, null, null, null, null, null, null);
+    public Cursor getImgList(Integer lvlId) {
+        String[] selectionArgs = {lvlId.toString()};
+        return dbGTD.query(TableImageList.TABLE_NAME, null, "lvlId = ? AND complexity <> 0", selectionArgs, null, null, null);
+    }
+
+    public Cursor getImageFromNotThisLevel(Integer lvlId, Integer imageId) {
+        String[] selectionArgs = {lvlId.toString(), imageId.toString()};
+        return dbGTD.query(TableImageList.TABLE_NAME, null, "lvlId <> ? AND imgId = ? AND complexity = 0", selectionArgs, null, null, null);
     }
 }
