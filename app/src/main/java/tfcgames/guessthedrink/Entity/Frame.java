@@ -53,7 +53,7 @@ public class Frame {
 
     private Integer getRandomImageId() {
         Random rnd = new Random(System.currentTimeMillis());
-        int maxImageId = 45; // через базу получать
+        int maxImageId = 50; // через базу получать
         int minImageId = 1;
         Boolean isFine = false;
         int randomImageId = 0;

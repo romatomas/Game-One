@@ -42,7 +42,7 @@ public class DBHelper extends SQLiteOpenHelper {
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         ContentValues cv = new ContentValues();
-        if (oldVersion == 3 && newVersion == 4) {
+        if (oldVersion == 7 && newVersion == 8) {
             String imgNames1[] = new String[] {"BIRD IN HAND SHIRAZ",
                                                "BOMBAY SAPHIRE",
                                                "BRANDS LAIRA CAB MERLOT",
@@ -75,8 +75,9 @@ public class DBHelper extends SQLiteOpenHelper {
                                                           "Albert bichot pouilly fuisse"};
             db.beginTransaction();
             try {
-                db.delete(TableImageList.TABLE_NAME, null, null);
-                //db.execSQL(TableImageList.CREATE_TABLE_IMAGE_LIST);
+//                db.delete(TableImageList.TABLE_NAME, null, null);
+                db.execSQL("drop table tblImgList");
+                db.execSQL(TableImageList.CREATE_TABLE_IMAGE_LIST);
                 Random rnd = new Random(System.currentTimeMillis());
                 String[] buf = null;
                 String[] buf_complexity = null;
@@ -94,14 +95,14 @@ public class DBHelper extends SQLiteOpenHelper {
                     for (int i = 0; i < buf.length; i++) {
                         int complexity = 1 + rnd.nextInt(3);
                         cv.clear();
-                        cv.put("imgCaption", imgNames1[i]);
+                        cv.put("imgCaption", buf[i]);
                         cv.put("complexity", complexity);
                         cv.put("lvlId", k);
                         db.insert(TableImageList.TABLE_NAME, null, cv);
                     }
                     for (int i = 0; i < buf_complexity.length; i++) {
                         cv.clear();
-                        cv.put("imgCaption", imgNames1_complexity[i]);
+                        cv.put("imgCaption", buf_complexity[i]);
                         cv.put("complexity", 0);
                         cv.put("lvlId", k);
                         db.insert(TableImageList.TABLE_NAME, null, cv);
