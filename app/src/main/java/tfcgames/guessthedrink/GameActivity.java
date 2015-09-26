@@ -22,10 +22,6 @@ import tfcgames.guessthedrink.DataBaseOperation.DataBaseConnector;
 import tfcgames.guessthedrink.Entity.Frame;
 
 public class GameActivity extends MainActivity{
-
-    //получить и установить текущий массив картинок
-    private String[] currentSetOfPictures;
-
     //получить и установить значение текущего индекса главного игрового массива строк
     private int valueArrayIndex;
 
