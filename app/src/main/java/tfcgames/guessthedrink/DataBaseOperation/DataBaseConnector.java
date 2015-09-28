@@ -9,7 +9,7 @@ import android.database.sqlite.SQLiteOpenHelper;
  */
 public class DataBaseConnector {
     private static final String DATABASE_NAME = "GTD_DATABASE";
-    private static final int DATABASE_VERSION = 8;
+    private static final int DATABASE_VERSION = 9;
 
     private final Context currentContext;
     private DBHelper dbHelper;
