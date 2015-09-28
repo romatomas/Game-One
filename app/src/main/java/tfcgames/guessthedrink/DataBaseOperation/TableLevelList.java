@@ -1,8 +1,5 @@
 package tfcgames.guessthedrink.DataBaseOperation;
 
-/**
- * Created by asus_home on 15.08.2015.
- */
 public class TableLevelList {
     public final static String FIELD_LEVEL_NAME = "lvlName"; // Field in table
     // Query for create

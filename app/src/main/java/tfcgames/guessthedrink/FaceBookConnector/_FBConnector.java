@@ -9,9 +9,6 @@ import com.facebook.android.DialogError;
 import com.facebook.android.Facebook;
 import com.facebook.android.FacebookError;
 
-/**
- * Created by asus_home on 15.08.2015.
- */
 public class _FBConnector {
     private final String API_KEY = "1399587140356912";
     private final String[] permissions = {"publish_stream"};

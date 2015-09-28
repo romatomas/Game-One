@@ -7,9 +7,6 @@ import java.util.Random;
 
 import tfcgames.guessthedrink.DataBaseOperation.DataBaseConnector;
 
-/**
- * Created by asus_home on 08.09.2015.
- */
 public class Frame {
     public String getPicture() {
         return picture;

@@ -8,9 +8,6 @@ import android.util.Log;
 
 import java.util.Random;
 
-/**
- * Created by asus_home on 15.08.2015.
- */
 public class DBHelper extends SQLiteOpenHelper {
     public DBHelper(Context context, String name, SQLiteDatabase.CursorFactory factory, int version) {
         super(context, name, factory, version);

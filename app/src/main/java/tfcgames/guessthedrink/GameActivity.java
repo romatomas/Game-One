@@ -22,17 +22,15 @@ import tfcgames.guessthedrink.DataBaseOperation.DataBaseConnector;
 import tfcgames.guessthedrink.Entity.Frame;
 
 public class GameActivity extends MainActivity{
-    //получить и установить значение текущего индекса главного игрового массива строк
+    //get and set current index value of main string array
     private int valueArrayIndex;
 
-    // объявляем активити с которыми патом будем работать
+    // refresh activity
     private Button btnA;
     private Button btnB;
     private Button btnC;
     private Button btnD;
-    private Button btnOK;
 
-    private TextView txtInfo;
     private TextView txtScore;
     private TextView txtScoreView;
 
@@ -54,9 +52,7 @@ public class GameActivity extends MainActivity{
         this.btnB = (Button) findViewById(R.id.btnB);
         this.btnC = (Button) findViewById(R.id.btnC);
         this.btnD = (Button) findViewById(R.id.btnD);
-        this.btnOK = (Button) findViewById(R.id.btnOK);
 
-        this.txtInfo = (TextView) findViewById(R.id.txtInfo);
         this.txtScore = (TextView) findViewById(R.id.txtScore);
         this.txtScoreView = (TextView) findViewById(R.id.txtScoreView);
 
@@ -70,7 +66,7 @@ public class GameActivity extends MainActivity{
         Intent intent = getIntent();
         this.levelId = intent.getIntExtra("levelId", -1);
 
-        // отобразил
+        // show
         setUIVisible(true);
 
         startLevelNew();
@@ -103,15 +99,6 @@ public class GameActivity extends MainActivity{
             }
         });
 
-        this.btnOK.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(GameActivity.this, SelectLvlActivity.class);
-                startActivity(intent);
-                overridePendingTransition(R.anim.slide_right_in, R.anim.slide_right_out);
-            }
-        });
-
         imgBtnBackGame.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -129,8 +116,6 @@ public class GameActivity extends MainActivity{
             this.btnB.setVisibility(View.VISIBLE);
             this.btnC.setVisibility(View.VISIBLE);
             this.btnD.setVisibility(View.VISIBLE);
-            this.btnOK.setVisibility(View.INVISIBLE);
-            this.txtInfo.setVisibility(View.INVISIBLE);
             this.txtScore.setVisibility(View.VISIBLE);
             this.txtScoreView.setVisibility(View.VISIBLE);
             this.imgPhoto.setVisibility(View.VISIBLE);
@@ -139,8 +124,6 @@ public class GameActivity extends MainActivity{
             this.btnB.setVisibility(View.INVISIBLE);
             this.btnC.setVisibility(View.INVISIBLE);
             this.btnD.setVisibility(View.INVISIBLE);
-            this.btnOK.setVisibility(View.VISIBLE);
-            this.txtInfo.setVisibility(View.VISIBLE);
             this.txtScore.setVisibility(View.INVISIBLE);
             this.txtScoreView.setVisibility(View.INVISIBLE);
             this.imgPhoto.setVisibility(View.INVISIBLE);
@@ -192,25 +175,27 @@ public class GameActivity extends MainActivity{
         InputStream ims = getAssets().open(getLevelPath() + "/" + frm.getPicture() + ".JPG");
         Drawable d = Drawable.createFromStream(ims, null);
         imgPhoto.setImageDrawable(d);
-        // Заполнить картинки неверными вариантами
+        // fill pics with wrong variants
         for (int i = 0 ; i < btnSet.length; i++) {
             btnSet[i].setText(currentLevel.get(indexPicture).getFalseImageList().get(i));
         }
-        //вывожу на рандомную кнопку правильный ответ (картинка, которая выводится на экран в данный момент)
+        // show on random button right answer (picture that displayed on the screen at this moment)
         int j = (int)(Math.random() * btnSet.length);
         btnSet[j].setText(currentLevel.get(indexPicture).getPicture());
     }
 
     private void isMatchNew(int i){
-        //проверка на правильный ответ (беру текст с кнопки и сверяю с именем картинки)
+        // check on right answer (take text from button and check it with pic's name)
         if (currentLevel.get(valueArrayIndex).getPicture().equals(btnSet[i].getText().toString())) {
-            //увеличиваю счетчик очков на единицу
+            // increment scorer on 1 point
             this.txtScore.setText(String.valueOf(Integer.valueOf(this.txtScore.getText().toString()) + 1));
-            //проверка - не закончились ли картинки
+            // check - pictures have ended?
             if (valueArrayIndex >= currentLevel.size() - 1){
                 setUIVisible(false);
-                this.txtInfo.setText("Поздравляем, Вы закончили уровень и заработали " + txtScore.getText() + " очков!");
-            } else {  //если картинки не закончились, то увеличиваю счетчик очков и перехожу на следующую картинку
+                Intent intent = new Intent(GameActivity.this, ResultActivity.class);
+                intent.putExtra("score", "Congratulations, You are finished the level and scored " + txtScore.getText() + " points!");
+                startActivity(intent);
+            } else {  // if pics not ended then increase scorer and go to the next pic
                 try {
                     nextPictureNew(valueArrayIndex + 1);
                 }
@@ -218,9 +203,11 @@ public class GameActivity extends MainActivity{
                     //return;
                 }
             }
-        } else {  //если ответ не правильный, то конец игры
+        } else {  //if the answer is wrong then THE END
             setUIVisible(false);
-            txtInfo.setText("Вы заработали " + this.txtScore.getText() + " очков!");
+            Intent intent = new Intent(GameActivity.this, ResultActivity.class);
+            intent.putExtra("score", "You scored " + this.txtScore.getText() + " points!");
+            startActivity(intent);
         }
     }
 }

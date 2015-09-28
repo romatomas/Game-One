@@ -4,9 +4,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-/**
- * Created by asus_home on 15.08.2015.
- */
+
 public class DataBaseConnector {
     private static final String DATABASE_NAME = "GTD_DATABASE";
     private static final int DATABASE_VERSION = 9;
