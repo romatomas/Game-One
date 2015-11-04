@@ -74,28 +74,28 @@ public class GameActivity extends MainActivity{
         this.btnA.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                isMatchNew(0);
+                isMatch(0);
             }
         });
 
         this.btnB.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                isMatchNew(1);
+                isMatch(1);
             }
         });
 
         this.btnC.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                isMatchNew(2);
+                isMatch(2);
             }
         });
 
         this.btnD.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                isMatchNew(3);
+                isMatch(3);
             }
         });
 
@@ -143,7 +143,7 @@ public class GameActivity extends MainActivity{
         return "pics/level_" + levelId.toString();
     }
 
-    //new version for start level
+    //start level
     private void startLevelNew() {
         try {
             DataBaseConnector dbConnector = new DataBaseConnector(this, dbHelper);
@@ -162,14 +162,14 @@ public class GameActivity extends MainActivity{
                 }
             }
             dbConnector.close();
-            nextPictureNew(0);
+            nextPicture(0);
         } catch (Exception e) {
             Log.d("GTD_LOG", e.getMessage().toString());
         }
 
     }
 
-    private void nextPictureNew(int indexPicture) throws IOException {
+    private void nextPicture(int indexPicture) throws IOException {
         Frame frm = currentLevel.get(indexPicture);
         valueArrayIndex = indexPicture;
         InputStream ims = getAssets().open(getLevelPath() + "/" + frm.getPicture() + ".JPG");
@@ -179,12 +179,28 @@ public class GameActivity extends MainActivity{
         for (int i = 0 ; i < btnSet.length; i++) {
             btnSet[i].setText(currentLevel.get(indexPicture).getFalseImageList().get(i));
         }
-        // show on random button right answer (picture that displayed on the screen at this moment)
-        int j = (int)(Math.random() * btnSet.length);
-        btnSet[j].setText(currentLevel.get(indexPicture).getPicture());
+        // show on random button right answer (picture displayed on the screen at this moment)
+        // with a check for the entry right answer in complexity false image list
+        String[] complexityImageList = frm.getComplexityFalseImageList().toArray(new String[frm.getComplexityFalseImageList().size()]);
+        Boolean isFine = false;
+        while (!isFine) {
+            int j = (int)(Math.random() * btnSet.length);
+            for (String aComplexityImageList : complexityImageList) {
+                if (btnSet[j].getText().equals(aComplexityImageList)) {
+                    isFine = false;
+                    break;
+                } else isFine = true;
+            }
+            if (complexityImageList.length == 0) {
+                isFine = true;
+            }
+            if (isFine) {
+                btnSet[j].setText(currentLevel.get(indexPicture).getPicture());
+            }
+        }
     }
 
-    private void isMatchNew(int i){
+    private void isMatch(int i){
         // check on right answer (take text from button and check it with pic's name)
         if (currentLevel.get(valueArrayIndex).getPicture().equals(btnSet[i].getText().toString())) {
             // increment scorer on 1 point
@@ -193,11 +209,11 @@ public class GameActivity extends MainActivity{
             if (valueArrayIndex >= currentLevel.size() - 1){
                 setUIVisible(false);
                 Intent intent = new Intent(GameActivity.this, ResultActivity.class);
-                intent.putExtra("score", "Congratulations, You are finished the level and scored " + txtScore.getText() + " points!");
+                intent.putExtra("score", "Congratulations!\nYou are finished the level and scored " + txtScore.getText() + " points!");
                 startActivity(intent);
             } else {  // if pics not ended then increase scorer and go to the next pic
                 try {
-                    nextPictureNew(valueArrayIndex + 1);
+                    nextPicture(valueArrayIndex + 1);
                 }
                 catch (IOException ex){
                     //return;
